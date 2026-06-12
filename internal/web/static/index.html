@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OrderOrchestrator</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>OrderOrchestrator</h1>
+        <p id="apiStatus" class="status-pill">Checking API</p>
+      </div>
+      <button id="healthButton" class="ghost-button" type="button">Refresh</button>
+    </header>
+
+    <main class="workspace">
+      <section class="panel create-panel" aria-labelledby="create-title">
+        <div class="panel-head">
+          <h2 id="create-title">Create Order</h2>
+        </div>
+        <form id="createForm" class="form-grid">
+          <label>
+            Customer ID
+            <input id="customerId" name="customerId" value="customer-1" required>
+          </label>
+          <label>
+            Total
+            <input id="totalAmount" name="totalAmount" inputmode="decimal" value="499.00" required>
+          </label>
+          <label>
+            Currency
+            <input id="currency" name="currency" maxlength="3" value="INR" required>
+          </label>
+          <label>
+            SKU
+            <input id="skuId" name="skuId" value="sku-1" required>
+          </label>
+          <label>
+            Qty
+            <input id="quantity" name="quantity" type="number" min="1" value="1" required>
+          </label>
+          <label>
+            Unit Price
+            <input id="unitPrice" name="unitPrice" inputmode="decimal" value="499.00" required>
+          </label>
+          <button class="primary-button full-row" type="submit">Create</button>
+        </form>
+      </section>
+
+      <section class="panel track-panel" aria-labelledby="track-title">
+        <div class="panel-head">
+          <h2 id="track-title">Track Order</h2>
+          <div class="button-row compact">
+            <button id="loadButton" class="ghost-button" type="button">Load</button>
+            <button id="streamButton" class="ghost-button" type="button">Stream</button>
+          </div>
+        </div>
+
+        <label class="order-id-field">
+          Order ID
+          <input id="orderId" name="orderId" placeholder="ord_...">
+        </label>
+
+        <div class="order-summary">
+          <div>
+            <span class="mini-label">State</span>
+            <strong id="currentState">None</strong>
+          </div>
+          <div>
+            <span class="mini-label">Version</span>
+            <strong id="currentVersion">-</strong>
+          </div>
+          <div>
+            <span class="mini-label">Updated</span>
+            <strong id="updatedAt">-</strong>
+          </div>
+        </div>
+
+        <div id="stateRail" class="state-rail" aria-label="Order state tracker"></div>
+      </section>
+
+      <section class="panel transition-panel" aria-labelledby="transition-title">
+        <div class="panel-head">
+          <h2 id="transition-title">Transition</h2>
+          <button id="newKeyButton" class="ghost-button" type="button">New Key</button>
+        </div>
+
+        <form id="transitionForm" class="transition-form">
+          <label>
+            Target State
+            <select id="targetState" name="targetState"></select>
+          </label>
+          <label>
+            Triggered By
+            <select id="triggeredBy" name="triggeredBy">
+              <option>USER</option>
+              <option>PAYMENT_GATEWAY</option>
+              <option>WAREHOUSE</option>
+              <option>RIDER</option>
+              <option>ADMIN</option>
+              <option>SYSTEM</option>
+            </select>
+          </label>
+          <label>
+            Idempotency Key
+            <input id="idempotencyKey" name="idempotencyKey" required>
+          </label>
+          <label class="full-row">
+            Metadata JSON
+            <textarea id="metadata" rows="4">{}</textarea>
+          </label>
+          <button class="primary-button full-row" type="submit">Apply</button>
+        </form>
+
+        <div class="quick-actions" aria-label="Quick transitions">
+          <button type="button" data-state="PAYMENT_PENDING">Payment Pending</button>
+          <button type="button" data-state="CONFIRMED">Confirmed</button>
+          <button type="button" data-state="PROCESSING">Processing</button>
+          <button type="button" data-state="PACKED">Packed</button>
+          <button type="button" data-state="DISPATCHED">Dispatched</button>
+          <button type="button" data-state="OUT_FOR_DELIVERY">Out For Delivery</button>
+          <button type="button" data-state="DELIVERED">Delivered</button>
+          <button type="button" data-state="CANCELLED" data-cancel="true">Cancel</button>
+        </div>
+      </section>
+
+      <section class="panel history-panel" aria-labelledby="history-title">
+        <div class="panel-head">
+          <h2 id="history-title">History</h2>
+          <button id="historyButton" class="ghost-button" type="button">Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>From</th>
+                <th>To</th>
+                <th>By</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody">
+              <tr><td colspan="4" class="empty-cell">No order loaded</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
